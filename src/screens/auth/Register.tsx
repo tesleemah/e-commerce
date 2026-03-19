@@ -5,7 +5,7 @@ import { useTheme } from "../../context/ThemeContext";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
 
-const RegisterScreen = ({ navigation }: Props)=> {
+export const RegisterScreen = ({ navigation }: Props)=> {
     const {classes} = useTheme();
     return (<View className={`flex-1 justify-center items-center ${classes.background}`}>
         <Text className={classes.textPrimary}>
@@ -15,4 +15,3 @@ const RegisterScreen = ({ navigation }: Props)=> {
     );
 };
 
-export{RegisterScreen};

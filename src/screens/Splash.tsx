@@ -11,9 +11,11 @@ export const SplashScreen = ({ navigation, route }: Props)=> {
     const {classes} = useTheme();
     return (
     <View className={`flex-1 justify-center items-center ${classes.background}`}>
-        <Text className={classes.textPrimary}>
-            Splash Screen
-        </Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')} className={`mt-6 px-8 py-3 rounded-xl ${classes.btnPrimary}`}>
+            <Text className={classes.btnPrimaryText}>
+            LogIn
+            </Text>
+        </TouchableOpacity>
     </View>
     );
     

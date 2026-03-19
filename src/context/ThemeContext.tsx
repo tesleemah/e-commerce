@@ -11,7 +11,7 @@ type ThemeContextType ={
 //create the context 
 const ThemeContext = createContext<ThemeContextType| undefined>(undefined);
 
-const ThemeProvider = (props: {children: ReactNode}) => {
+export const ThemeProvider = (props: {children: ReactNode}) => {
     const [isDark, setisDark] = useState(true);
 
     useEffect(()=>{
@@ -50,7 +50,7 @@ useEffect(()=>{
  const classes = isDark ? darkTheme: lightTheme;
  return <ThemeContext.Provider value= {{classes ,toggleTheme, isDark}}>{props.children}</ThemeContext.Provider> 
 };
-const useTheme = (): ThemeContextType =>{
+export const useTheme = (): ThemeContextType =>{
     const theme = useContext(ThemeContext);
     if (!theme){
         throw Error("useTheme must be used within a ThemeProvider");
@@ -58,4 +58,3 @@ const useTheme = (): ThemeContextType =>{
     return theme;
 }
 
-export {ThemeProvider, useTheme};
