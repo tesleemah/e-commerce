@@ -14,7 +14,7 @@ interface AppInputProps {
     keyboardType?: KeyboardTypeOptions,
     returnKeyType?: ReturnKeyTypeOptions,
     onSubmit?: () => void,
-    autoCapitalize?: 'none',
+    autoCapitalize?: 'none'|'words',
     ref?: string
 }
 

@@ -10,6 +10,7 @@ export const RootNavigator = () =>{
     const { classes } = useTheme()
     if (isLoading){
  return (
+    
         <View className={`flex-1 justify-center items-center ${classes.background}`}>
             <ActivityIndicator size="large" color="#2563EB" />
         </View>
