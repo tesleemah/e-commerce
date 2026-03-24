@@ -7,6 +7,7 @@ import { useCallback, useState } from "react";
 type Props = NativeStackScreenProps<RootStackParamList, "ProductDetails">;
 
 export const ProductDetailsScreen = ({ navigation, route }: Props) => {
+<<<<<<< HEAD
   // useCallback optimization — prevents recreation on every render
   const increment = useCallback(() => {
     setQuantity((prev) => prev + 1);
@@ -19,6 +20,9 @@ export const ProductDetailsScreen = ({ navigation, route }: Props) => {
   const [quantity, setQuantity] = useState(1);
   const [imageLoading, setImageLoading] = useState(true);
 
+=======
+  const { classes } = useTheme();
+>>>>>>> 76d44df (feat: profile screem)
   return (
     <View
       className={`flex-1 justify-center items-center ${classes.background}`}
