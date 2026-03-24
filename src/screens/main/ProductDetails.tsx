@@ -6,14 +6,14 @@ import {
   ActivityIndicator,
   ScrollView,
 } from "react-native";
+
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { BottomTabParamList, RootStackParamList } from "../../types/navigation";
 import { useTheme } from "../../context/ThemeContext";
 import { useCallback, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { CompositeScreenProps } from "@react-navigation/native";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { useCartStore } from "../../context/CartContext";
+import { CompositeScreenProps } from "@react-navigation/native";
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<RootStackParamList, "ProductDetails">,
@@ -36,14 +36,6 @@ export const ProductDetailsScreen = ({ navigation, route }: Props) => {
   const [quantity, setQuantity] = useState(1);
   const [imageLoading, setImageLoading] = useState(true);
 
-  // inside component:
-  const addToCart = useCartStore((state) => state.addToCart);
-
-  // on button press:
-  const handleAddToCart = () => {
-    addToCart(product, quantity);
-    navigation.navigate("MainTabs", { screen: "Cart" }, { merge: true });
-  };
   const discountedPrice = (
     product.price -
     (product.price * product.discountPercentage) / 100
@@ -160,7 +152,6 @@ export const ProductDetailsScreen = ({ navigation, route }: Props) => {
       <View className="px-4 mt-4">
         <TouchableOpacity
           className={`py-4 rounded-2xl items-center flex-row justify-center gap-2 ${classes.btnPrimary}`}
-          onPress={handleAddToCart}
         >
           <Ionicons name="cart-outline" size={20} color="white" />
           <Text className={`text-base font-bold ${classes.btnPrimaryText}`}>
