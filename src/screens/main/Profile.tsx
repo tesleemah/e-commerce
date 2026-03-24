@@ -14,7 +14,6 @@ import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../context/AuthContext";
-import { IconProps } from "@expo/vector-icons/build/createIconSet";
 import { User } from "../../types";
 import { AppInput } from "../../components/AppInput";
 import { MenuItem } from "../../components/MenuItem";
@@ -103,7 +102,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
                 className="rounded-full"
               />
             ) : (
-              <View className="w-20 h-20 rounded-full bg-blue-800 items-center justify-center border-2 border-blue-500"></View>
+              <View className="w-20 h-20 rounded-full bg-black items-center justify-center border-2 border-blue-500"></View>
             )}
             <View className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-blue-600 items-center justify-center border-2 border-[#0a0f1e]">
               <Ionicons name="camera" size={12} color="white" />
@@ -155,7 +154,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
           iconBg="#3b82f6"
           title="Edit Profile"
           onPress={() => setIsEditing(true)}
-          titleColor={"text-white"}
+          titleColor={isDark ? "text-black" : "text-blue"}
         />
         <MenuItem
           icon="heart-outline"
@@ -164,7 +163,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
           onPress={() => {
             navigation.navigate("Favorite");
           }}
-          titleColor={"text-white"}
+          titleColor={isDark ? "text-black" : "text-blue"}
         />
         <MenuItem
           icon="cart-outline"
@@ -173,15 +172,15 @@ export const ProfileScreen = ({ navigation }: Props) => {
           onPress={() => {
             navigation.navigate("Cart");
           }}
-          titleColor={"text-white"}
+          titleColor={isDark ? "text-black" : "text-blue"}
         />
         <MenuItem
           icon="moon-outline"
           iconBg="#6366f1"
           title="Theme"
-          rightElement={<Switch value={isDark} onValueChange={toggleTheme} />}
+          rightElement={<Switch value={!isDark} onValueChange={toggleTheme} />}
           onPress={toggleTheme}
-          titleColor={"text-white"}
+          titleColor={isDark ? "text-black" : "text-blue"}
         />
       </View>
       <View className="pt-8 mt-4 justify-center items-center">
