@@ -2,11 +2,23 @@ import { View, Text } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types/navigation";
 import { useTheme } from "../../context/ThemeContext";
+import { useCallback, useState } from "react";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ProductDetails">;
 
 export const ProductDetailsScreen = ({ navigation, route }: Props) => {
+  // useCallback optimization — prevents recreation on every render
+  const increment = useCallback(() => {
+    setQuantity((prev) => prev + 1);
+  }, []);
+
+  const decrement = useCallback(() => {
+    setQuantity((prev) => Math.max(1, prev - 1));
+  }, []);
   const { classes } = useTheme();
+  const [quantity, setQuantity] = useState(1);
+  const [imageLoading, setImageLoading] = useState(true);
+
   return (
     <View
       className={`flex-1 justify-center items-center ${classes.background}`}
