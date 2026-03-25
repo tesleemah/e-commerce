@@ -8,7 +8,12 @@ export type RootStackParamList = {
   MainTabs: NavigatorScreenParams<BottomTabParamList>;
   ProductDetails: { product: Product };
   Checkout: undefined;
-  Success: { orderId: string };
+  Success: {
+    orderId: string
+    total: number
+    paymentMethod: string
+    address: string
+};
   EditProfile: undefined;
 };
 export type BottomTabParamList = {

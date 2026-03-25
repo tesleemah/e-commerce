@@ -1,98 +1,144 @@
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  useEffect,
+  ReactNode,
+  useState,
+} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CartItem, Product } from "../types";
+import { CartItems, Product } from "../types";
 
-type CartStore = {
-  cartItems: CartItem[];
-  addToCart: (product: Product, quantity: number) => void;
-  removeFromCart: (productId: number) => void;
-  increaseQty: (productId: number) => void;
-  decreaseQty: (productId: number) => void;
-  clearCart: () => void;
-  cartTotal: () => number;
-  cartCount: () => number;
+// 1. Define the Storage Key
+const CART_STORAGE_KEY = "@shopping_cart_data";
+
+interface CartState {
+  cartItems: CartItems[];
+}
+
+type CartAction =
+  | { type: "ADD_TO_CART"; payload: { product: Product; quantity: number } }
+  | { type: "REMOVE_FROM_CART"; payload: number }
+  | { type: "INCREASE_QTY"; payload: number }
+  | { type: "DECREASE_QTY"; payload: number }
+  | { type: "CLEAR_CART" }
+  | { type: "HYDRATE_CART"; payload: CartItems[] }; // New action for loading saved data
+
+const initialState: CartState = {
+  cartItems: [],
 };
 
-export const useCartStore = create<CartStore>()(
-  persist(
-    (set, get) => ({
-      cartItems: [],
+const cartReducer = (state: CartState, action: CartAction): CartState => {
+  switch (action.type) {
+    case "HYDRATE_CART":
+      return { ...state, cartItems: action.payload };
 
-      // Add product to cart — if exists increase qty, if not add new item
-      addToCart: (product: Product, quantity: number) => {
-        const existing = get().cartItems.find((item) => item.id === product.id);
-        if (existing) {
-          set((state) => ({
-            cartItems: state.cartItems.map((item) =>
-              item.id === product.id
-                ? { ...item, quantity: item.quantity + quantity }
-                : item,
-            ),
-          }));
-        } else {
-          set((state) => ({
-            cartItems: [...state.cartItems, { ...product, quantity }],
-          }));
+    case "ADD_TO_CART":
+      const existingItem = state.cartItems.find(
+        (item) => item.id === action.payload.product.id,
+      );
+      if (existingItem) {
+        return {
+          ...state,
+          cartItems: state.cartItems.map((item) =>
+            item.id === action.payload.product.id
+              ? { ...item, quantity: item.quantity + action.payload.quantity }
+              : item,
+          ),
+        };
+      }
+      return {
+        ...state,
+        cartItems: [
+          ...state.cartItems,
+          { ...action.payload.product, quantity: action.payload.quantity },
+        ],
+      };
+
+    case "REMOVE_FROM_CART":
+      return {
+        ...state,
+        cartItems: state.cartItems.filter((item) => item.id !== action.payload),
+      };
+
+    case "INCREASE_QTY":
+      return {
+        ...state,
+        cartItems: state.cartItems.map((item) =>
+          item.id === action.payload
+            ? { ...item, quantity: item.quantity + 1 }
+            : item,
+        ),
+      };
+
+    case "DECREASE_QTY":
+      return {
+        ...state,
+        cartItems: state.cartItems.map((item) =>
+          item.id === action.payload
+            ? { ...item, quantity: Math.max(1, item.quantity - 1) }
+            : item,
+        ),
+      };
+
+    case "CLEAR_CART":
+      return initialState;
+
+    default:
+      return state;
+  }
+};
+
+const CartContext = createContext<
+  | {
+      state: CartState;
+      dispatch: React.Dispatch<CartAction>;
+    }
+  | undefined
+>(undefined);
+
+export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const [state, dispatch] = useReducer(cartReducer, initialState);
+
+  // 2. LOAD DATA (Effect runs once on mount)
+  useEffect(() => {
+    const loadCart = async () => {
+      try {
+        const savedCart = await AsyncStorage.getItem(CART_STORAGE_KEY);
+        if (savedCart) {
+          dispatch({ type: "HYDRATE_CART", payload: JSON.parse(savedCart) });
         }
-      },
+      } catch (e) {
+        console.error("Failed to load cart", e);
+      }
+    };
+    loadCart();
+  }, []);
 
-      // Remove item from cart by product id
-      removeFromCart: (productId: number) => {
-        set((state) => ({
-          cartItems: state.cartItems.filter((item) => item.id !== productId),
-        }));
-      },
-
-      // Increase quantity of a specific item by 1
-      increaseQty: (productId: number) => {
-        set((state) => ({
-          cartItems: state.cartItems.map((item) =>
-            item.id === productId
-              ? { ...item, quantity: item.quantity + 1 }
-              : item,
-          ),
-        }));
-      },
-
-      // Decrease quantity — never goes below 1
-      decreaseQty: (productId: number) => {
-        set((state) => ({
-          cartItems: state.cartItems.map((item) =>
-            item.id === productId
-              ? { ...item, quantity: Math.max(1, item.quantity - 1) }
-              : item,
-          ),
-        }));
-      },
-
-      // Clear all items from cart
-      clearCart: () => set({ cartItems: [] }),
-
-      // Compute total price of all items in cart
-      // Uses get() to access latest cartItems state
-      cartTotal: () => {
-        return get().cartItems.reduce(
-          (sum, item) => sum + item.price * item.quantity,
-          0,
+  // 3. SAVE DATA (Effect runs every time cartItems change)
+  useEffect(() => {
+    const saveCart = async () => {
+      try {
+        await AsyncStorage.setItem(
+          CART_STORAGE_KEY,
+          JSON.stringify(state.cartItems),
         );
-      },
+      } catch (e) {
+        console.error("Failed to save cart", e);
+      }
+    };
+    saveCart();
+  }, [state.cartItems]);
 
-      // Compute total number of items in cart
-      // Uses get() to access latest cartItems state
-      cartCount: () => {
-        return get().cartItems.reduce((sum, item) => sum + item.quantity, 0);
-      },
-    }),
-    {
-      // Key used to save cart in AsyncStorage
-      name: "cart-storage",
+  return (
+    <CartContext.Provider value={{ state, dispatch }}>
+      {children}
+    </CartContext.Provider>
+  );
+};
 
-      // Tell persist to use AsyncStorage as the storage engine
-      storage: createJSONStorage(() => AsyncStorage),
-
-      // Only persist cartItems — not the functions
-      partialize: (state) => ({ cartItems: state.cartItems }),
-    },
-  ),
-);
+export const useCart = () => {
+  const context = useContext(CartContext);
+  if (!context) throw new Error("useCart must be used within a CartProvider");
+  return context;
+};

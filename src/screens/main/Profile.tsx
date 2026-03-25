@@ -126,6 +126,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
               autoCapitalize="none"
               keyboardType="email-address"
               returnKeyType="done"
+              
             />
             <View className="flex-row justify-center gap-10 mt-4">
               <TouchableOpacity onPress={() => setIsEditing(false)}>

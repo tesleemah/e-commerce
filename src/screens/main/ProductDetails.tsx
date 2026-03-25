@@ -14,6 +14,7 @@ import { useCallback, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { CompositeScreenProps } from "@react-navigation/native";
+import { useCart } from "../../context/CartContext";
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<RootStackParamList, "ProductDetails">,
@@ -22,6 +23,7 @@ type Props = CompositeScreenProps<
 
 export const ProductDetailsScreen = ({ navigation, route }: Props) => {
   const { product } = route.params;
+  const { dispatch } = useCart();
 
   // useCallback optimization — prevents recreation on every render
   const increment = useCallback(() => {
@@ -40,6 +42,7 @@ export const ProductDetailsScreen = ({ navigation, route }: Props) => {
     product.price -
     (product.price * product.discountPercentage) / 100
   ).toFixed(2);
+
   return (
     <ScrollView className={`flex-1 pt-8 ${classes.background}`}>
       <View className="absolute top-0 left-0 right-0 z-10 flex-row justify-between items-center px-4 pt-4">
@@ -130,11 +133,7 @@ export const ProductDetailsScreen = ({ navigation, route }: Props) => {
             className={`w-9 h-9 rounded-full items-center justify-center ${classes.surface}`}
             disabled={quantity === 1}
           >
-            <Ionicons
-              name="remove"
-              size={12}
-              color={quantity === 1 ? "#475569" : "#f1f5f9"}
-            />
+            <Ionicons name="remove" size={12} color={"#475569"} />
           </TouchableOpacity>
           <Text
             className={`text-lg font-bold w-6 text-center ${classes.textPrimary}`}
@@ -145,12 +144,19 @@ export const ProductDetailsScreen = ({ navigation, route }: Props) => {
             onPress={increment}
             className={`w-9 h-9 rounded-full items-center justify-center ${classes.surface}`}
           >
-            <Ionicons name="add" size={12} color="#f1f5f9" />
+            <Ionicons name="add" size={12} color="bg-black" />
           </TouchableOpacity>
         </View>
       </View>
       <View className="px-4 mt-4">
         <TouchableOpacity
+          onPress={() => {
+            dispatch({
+              type: "ADD_TO_CART",
+              payload: { product, quantity },
+            });
+            navigation.navigate("MainTabs", { screen: "Cart" });
+          }}
           className={`py-4 rounded-2xl items-center flex-row justify-center gap-2 ${classes.btnPrimary}`}
         >
           <Ionicons name="cart-outline" size={20} color="white" />

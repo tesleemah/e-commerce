@@ -35,9 +35,7 @@ export interface ThemeClass {
   overlay: string;
   skeleton: string;
 }
-export interface CartItem extends Product {
-  quantity: number;
-}
+
 export interface Product {
   id: number;
   title: string;

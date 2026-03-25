@@ -6,20 +6,19 @@ import { CartScreen } from "../screens/main/Cart";
 import { ProfileScreen } from "../screens/main/Profile";
 import { useTheme } from "../context/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
-import { useCartStore } from "../types/CartStore";
+
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
 export const TabNavigator = () => {
-  const { classes } = useTheme();
-  const cartCount = useCartStore((state) => state.cartCount);
-
+  const { classes, isDark } = useTheme();
+  const tabcolor = isDark ? `${classes.background}` : "#3b82f6";
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
 
         tabBarStyle: {
-          backgroundColor: "#ffffff",
+          backgroundColor: tabcolor,
           borderTopColor: "#e5e7eb",
           borderTopWidth: 0.5,
           elevation: 5, // Optional: adds a slight shadow on Android
@@ -52,7 +51,6 @@ export const TabNavigator = () => {
         name="Favorite"
         component={WishlistScreen}
         options={{
-          tabBarBadge: cartCount() > 0 ? cartCount() : undefined,
           tabBarIcon: ({ focused }) => (
             <Ionicons
               name={focused ? "heart" : "heart-outline"}
