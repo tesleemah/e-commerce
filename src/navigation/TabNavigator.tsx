@@ -27,7 +27,7 @@ export const TabNavigator = () => {
         tabBarActiveTintColor: "#3b82f6", // Blue for the active tab (standard for white themes)
         tabBarInactiveTintColor: "#9ca3af", // Gray for inactive tabs
         tabBarLabelStyle: {
-          fontSize: 11,
+          fontSize: 10,
           fontWeight: "500",
         },
       }}
