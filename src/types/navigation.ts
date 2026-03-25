@@ -1,10 +1,11 @@
+import { NavigatorScreenParams } from "@react-navigation/native";
 import { Product } from ".";
 
 export type RootStackParamList = {
   Splash: undefined;
   Login: undefined;
   Register: undefined;
-  MainTabs: undefined;
+  MainTabs: NavigatorScreenParams<BottomTabParamList>;
   ProductDetails: { product: Product };
   Checkout: undefined;
   Success: { orderId: string };

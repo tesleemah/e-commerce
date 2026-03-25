@@ -1,5 +1,5 @@
 import "./global.css";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { ThemeProvider } from "./src/context/ThemeContext";
 import { RootNavigator } from "./src/navigation/";
 import { AuthProvider } from "./src/context/AuthContext";

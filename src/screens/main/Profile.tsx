@@ -5,6 +5,7 @@ import {
   Alert,
   TouchableOpacity,
   Switch,
+  ScrollView,
 } from "react-native";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { BottomTabParamList } from "../../types/navigation";
@@ -90,7 +91,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
   const [profileImage, setProfileImage] = useState<string | null>();
 
   return (
-    <View className={`flex-1 justify-centter ${classes.background}`}>
+    <ScrollView className={`flex-1 justify-centter ${classes.background}`}>
       <View className="items-center mb-8 pt-8">
         <View className="flex-row justify-between items-center mb-6"></View>
         <TouchableOpacity onPress={pickImage}>
@@ -197,6 +198,6 @@ export const ProfileScreen = ({ navigation }: Props) => {
           />
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };

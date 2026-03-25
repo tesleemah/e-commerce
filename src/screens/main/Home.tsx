@@ -71,10 +71,10 @@ export const HomeScreen = ({ navigation }: Props) => {
     });
   }, [products, searchText, selectedCategory]);
   return (
-    <SafeAreaView className={`flex-1 ${classes.background}`}>
+    <SafeAreaView className={`flex-1 px-20 \ ${classes.background}`}>
       <FlatList
         data={filteredProducts}
-        numColumns={3}
+        numColumns={2}
         ListEmptyComponent={() => {
           if (loading) return null;
           if (error)
@@ -109,7 +109,7 @@ export const HomeScreen = ({ navigation }: Props) => {
             </View>
           );
         }}
-        columnWrapperStyle={{ gap: 10, paddingHorizontal: 16 }}
+        columnWrapperStyle={{ gap: 5, paddingHorizontal: 10 }}
         showsVerticalScrollIndicator={false}
         keyExtractor={(products) => products.id.toString()}
         renderItem={renderProduct}
