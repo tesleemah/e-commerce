@@ -6,11 +6,12 @@ import { CartScreen } from "../screens/main/Cart";
 import { ProfileScreen } from "../screens/main/Profile";
 import { useTheme } from "../context/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
-
+import { useCartStore } from "../types/CartStore";
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
 export const TabNavigator = () => {
   const { classes } = useTheme();
+  const cartCount = useCartStore((state) => state.cartCount);
 
   return (
     <Tab.Navigator
@@ -51,6 +52,7 @@ export const TabNavigator = () => {
         name="Favorite"
         component={WishlistScreen}
         options={{
+          tabBarBadge: cartCount() > 0 ? cartCount() : undefined,
           tabBarIcon: ({ focused }) => (
             <Ionicons
               name={focused ? "heart" : "heart-outline"}
