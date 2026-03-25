@@ -8,7 +8,7 @@ type MenuItemProps = {
   title: string;
   onPress: () => void;
   rightElement?: React.ReactNode;
-  titleColor: "text-white" | "text-red-500" | null; // Default to your theme's text color
+  titleColor: string; // Default to your theme's text color
   isLast?: boolean;
 };
 export const MenuItem = ({

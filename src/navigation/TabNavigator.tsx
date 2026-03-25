@@ -79,6 +79,8 @@ export const TabNavigator = () => {
         name="Profile"
         component={ProfileScreen}
         options={{
+          headerShown: true,
+          headerTitleAlign: "center",
           tabBarIcon: ({ focused }) => (
             <Ionicons
               name={focused ? "person" : "person-outline"}
