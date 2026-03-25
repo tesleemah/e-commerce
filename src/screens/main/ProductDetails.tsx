@@ -9,17 +9,12 @@ import {
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { BottomTabParamList, RootStackParamList } from "../../types/navigation";
-import { BottomTabParamList, RootStackParamList } from "../../types/navigation";
 import { useTheme } from "../../context/ThemeContext";
 import { useCallback, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { CompositeScreenProps } from "@react-navigation/native";
 
-type Props = CompositeScreenProps<
-  NativeStackScreenProps<RootStackParamList, "ProductDetails">,
-  BottomTabScreenProps<BottomTabParamList>
->;
 type Props = CompositeScreenProps<
   NativeStackScreenProps<RootStackParamList, "ProductDetails">,
   BottomTabScreenProps<BottomTabParamList>
