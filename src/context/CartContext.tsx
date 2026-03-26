@@ -100,7 +100,7 @@ const CartContext = createContext<
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(cartReducer, initialState);
 
-  // 2. LOAD DATA (Effect runs once on mount)
+  // 2. LOAD DATA
   useEffect(() => {
     const loadCart = async () => {
       try {
@@ -115,7 +115,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     loadCart();
   }, []);
 
-  // 3. SAVE DATA (Effect runs every time cartItems change)
+  // 3. SAVE DATA
   useEffect(() => {
     const saveCart = async () => {
       try {

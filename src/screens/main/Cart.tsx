@@ -1,11 +1,5 @@
 import { useCallback } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  FlatList,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { BottomTabParamList, RootStackParamList } from "../../types/navigation";
 import { useTheme } from "../../context/ThemeContext";
@@ -29,7 +23,7 @@ export const CartScreen = ({ navigation }: Props) => {
 
   // Derived calculations (Instant and safe)
   const cartTotal = cartItems.reduce((acc, i) => acc + i.price * i.quantity, 0);
-  const cartCount = cartItems.reduce((acc, i) => acc + i.quantity, 0);
+  const cartCount = cartItems.length;
 
   const renderItem = useCallback(
     ({ item }: { item: CartItems }) => (

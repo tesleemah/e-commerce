@@ -126,7 +126,6 @@ export const ProfileScreen = ({ navigation }: Props) => {
               autoCapitalize="none"
               keyboardType="email-address"
               returnKeyType="done"
-              
             />
             <View className="flex-row justify-center gap-10 mt-4">
               <TouchableOpacity onPress={() => setIsEditing(false)}>
@@ -150,17 +149,19 @@ export const ProfileScreen = ({ navigation }: Props) => {
           </View>
         )}
       </View>
-      <View className="mx-4 mb-6 overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100">
+      <View className="mx-4 mb-6 overflow-hidden rounded-2xl bg-gray-300 shadow-sm border border-gray-600">
         <MenuItem
-          icon="pencil-outline"
+          icon="pencil"
           iconBg="#3b82f6"
+          iconColor="bg-black"
           title="Edit Profile"
           onPress={() => setIsEditing(true)}
           titleColor={isDark ? "text-black" : "text-blue"}
         />
         <MenuItem
-          icon="heart-outline"
+          icon="heart"
           iconBg="#3b82f6"
+          iconColor="bg-black"
           title="Favourite"
           onPress={() => {
             navigation.navigate("Favorite");
@@ -168,8 +169,9 @@ export const ProfileScreen = ({ navigation }: Props) => {
           titleColor={isDark ? "text-black" : "text-blue"}
         />
         <MenuItem
-          icon="cart-outline"
+          icon="cart-sharp"
           iconBg="#10b981"
+          iconColor="bg-black"
           title="Cart"
           onPress={() => {
             navigation.navigate("Cart");
@@ -177,8 +179,9 @@ export const ProfileScreen = ({ navigation }: Props) => {
           titleColor={isDark ? "text-black" : "text-blue"}
         />
         <MenuItem
-          icon="moon-outline"
+          icon="moon-sharp"
           iconBg="#6366f1"
+          iconColor="bg-black"
           title="Theme"
           rightElement={<Switch value={!isDark} onValueChange={toggleTheme} />}
           onPress={toggleTheme}
@@ -188,7 +191,7 @@ export const ProfileScreen = ({ navigation }: Props) => {
       <View className="pt-8 mt-4 justify-center items-center">
         <View className="overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-sm">
           <MenuItem
-            icon="log-out-outline"
+            icon="log-out"
             iconBg="#fee2e2" // Light red background (Red-100)
             iconColor="#ef4444" // Bright red icon (Red-500)
             title="Logout"

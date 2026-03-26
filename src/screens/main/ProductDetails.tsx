@@ -46,12 +46,6 @@ export const ProductDetailsScreen = ({ navigation, route }: Props) => {
   return (
     <ScrollView className={`flex-1 pt-8 ${classes.background}`}>
       <View className="absolute top-0 left-0 right-0 z-10 flex-row justify-between items-center px-4 pt-4">
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          className="w-10 h-10 rounded-full bg-black/40 items-center justify-center"
-        >
-          <Ionicons name="arrow-back" size={20} color="white" />
-        </TouchableOpacity>
         <TouchableOpacity className="w-10 h-10 rounded-full bg-black/40 items-center justify-center">
           <Ionicons name="heart-outline" size={20} color="white" />
         </TouchableOpacity>
@@ -82,6 +76,10 @@ export const ProductDetailsScreen = ({ navigation, route }: Props) => {
         {/* Title */}
         <Text className={`text-xl font-bold mb-2 ${classes.textPrimary}`}>
           {product.title}
+        </Text>
+        {/* Title */}
+        <Text className={` mb-2 ${classes.textPrimary}`}>
+          {product.description}
         </Text>
 
         {/* Rating row */}

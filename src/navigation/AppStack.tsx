@@ -17,7 +17,11 @@ export const AppStack = () => {
       <Stack.Screen
         name="ProductDetails"
         component={ProductDetailsScreen}
-        options={{ headerTitleAlign: "center" }}
+        options={{
+          headerTitleAlign: "center",
+          headerBackVisible: true,
+          headerShown: true,
+        }}
       />
       <Stack.Screen name="Checkout" component={CheckoutScreen} />
       <Stack.Screen name="Success" component={SuccessScreen} />

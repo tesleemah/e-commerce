@@ -125,14 +125,16 @@ export const CheckoutScreen = ({ navigation }: Props) => {
       >
         <View className="px-4 pt-12 pb-8">
           {/* Header */}
-          <View className="flex-row items-center gap-3 mb-6">
+          <View className="flex-row gap-10 mb-6">
             <TouchableOpacity
               onPress={() => navigation.goBack()}
               className={`w-10 h-10 rounded-full items-center justify-center border ${classes.border} ${classes.surface}`}
             >
               <Ionicons name="arrow-back" size={20} color={"#94a3b8"} />
             </TouchableOpacity>
-            <Text className={`text-xl font-bold ${classes.textPrimary}`}>
+            <Text
+              className={`pl-10 text-xl font-bold justify-center items-center${classes.textPrimary}`}
+            >
               Checkout
             </Text>
           </View>

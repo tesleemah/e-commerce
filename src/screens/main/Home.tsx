@@ -1,179 +1,105 @@
-import {
-  View,
-  Text,
-  FlatList,
-  TextInput,
-  TouchableOpacity,
-  ActivityIndicator,
-  ScrollView,
-} from "react-native";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { BottomTabParamList, RootStackParamList } from "../../types/navigation";
-import { useTheme } from "../../context/ThemeContext";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Dimensions, FlatList } from "react-native";
 import { ProductCard } from "../../components/ProductCard";
-import { Product } from "../../types";
+import { useEffect, useMemo, useState } from "react";
+import { useCategories } from "../../hooks/useCategories";
+import { HomeHeader } from "../home/HomeHeader";
+import { CategoriesModal } from "../../components/CAtegoriesModal";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useTheme } from "../../context/ThemeContext";
+import { useAuth } from "../../context/AuthContext";
 import { useProducts } from "../../hooks/useProduct";
-import { Ionicons } from "@expo/vector-icons";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { BottomTabParamList, RootStackParamList } from "../../types/navigation";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 
 type Props = CompositeScreenProps<
   BottomTabScreenProps<BottomTabParamList, "Home">,
   NativeStackScreenProps<RootStackParamList>
 >;
-export const HomeScreen = ({ navigation }: Props) => {
+
+export const HomeScreen = ({ navigation }: any) => {
   const { classes } = useTheme();
-  const { products, loading, error } = useProducts();
+  const { user } = useAuth();
+  const { products, loading, initialLoad, hasMore, loadMore } = useProducts();
+  const { categories } = useCategories();
+
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [categories, setCategories] = useState<string[]>([]);
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch(
-          "https://dummyjson.com/products/categories",
-        );
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [showCategoriesModal, setShowCategoriesModal] = useState(false);
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch categories");
-        }
-        const data = await response.json();
-        setCategories(data.map((category: { slug: string }) => category.slug));
-      } catch (error) {
-        console.error("Error fetching categories");
-      }
-    };
-    fetchCategories();
+  useEffect(() => {
+    initialLoad();
   }, []);
 
-  const renderProduct = useCallback(
-    ({ item }: { item: Product }) => (
-      <ProductCard
-        product={item}
-        onPressed={() =>
-          navigation.navigate("ProductDetails", { product: item })
-        }
-      />
-    ),
-    [navigation],
-  );
-  // useMemo optimization — only recomputes when products, searchText or selectedCategory changes
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good Morning";
+    if (hour < 17) return "Good Afternoon";
+    return "Good Evening";
+  };
+
   const filteredProducts = useMemo(() => {
-    return products.filter((product) => {
-      const matchesSearch = product.title
-        .toLowerCase()
-        .includes(searchText.toLowerCase());
-      const matchesCategory =
-        selectedCategory === "all" || product.category === selectedCategory;
-      return matchesSearch && matchesCategory;
-    });
+    return products.filter(
+      (p) =>
+        p.title.toLowerCase().includes(searchText.toLowerCase()) &&
+        (selectedCategory === "all" || p.category === selectedCategory),
+    );
   }, [products, searchText, selectedCategory]);
+
+  const featuredProducts = useMemo(() => products.slice(0, 5), [products]);
+
   return (
-    <SafeAreaView className={`flex-1 px-20 \ ${classes.background}`}>
+    <SafeAreaView className={`flex-1 ${classes.background}`}>
       <FlatList
         data={filteredProducts}
-        numColumns={2}
-        ListEmptyComponent={() => {
-          if (loading) return null;
-          if (error)
-            return (
-              <View className="flex-1 items-center justify-center py-20">
-                <Text className={classes.textError}>{error}</Text>
-              </View>
-            );
-          return (
-            <View className="flex-1 items-center justify-center py-20">
-              <Ionicons name="search-outline" size={48} color="#475569" />
-              <Text className={`text-base mt-4 ${classes.textSecondary}`}>
-                No products found
-              </Text>
-              <TouchableOpacity
-                onPress={() => {
-                  setSearchText("");
-                  setSelectedCategory("all");
-                }}
-                className={`mt-4 px-6 py-2 rounded-xl ${classes.btnPrimary}`}
-              >
-                <Text className={classes.btnPrimaryText}>Clear search</Text>
-              </TouchableOpacity>
-            </View>
-          );
-        }}
-        ListFooterComponent={() => {
-          if (!loading) return null;
-          return (
-            <View className="py-10 items-center">
-              <ActivityIndicator size="large" color="#2563EB" />
-            </View>
-          );
-        }}
-        columnWrapperStyle={{ gap: 5, paddingHorizontal: 10 }}
-        showsVerticalScrollIndicator={false}
-        keyExtractor={(products) => products.id.toString()}
-        renderItem={renderProduct}
-        ListHeaderComponent={() => (
-          <View className="flex-row justify-between items-center px-4 py-4">
-            <Text className={`text-2xl font-bold ${classes.textPrimary}`}>
-              Discover
-            </Text>
-            <Ionicons name="notifications-outline" size={24} color="#475569" />
-            <View
-              className={`flex-row items-center mx-4 mb-4 px-3 gap-2 rounded-xl ${classes.inputBg} ${classes.border}`}
-            >
-              <Ionicons name="search-outline" size={18} color="#475569" />
-              <TextInput
-                placeholder="Search products..."
-                value={searchText}
-                onChangeText={setSearchText}
-                className={`flex-1 py-3 ${classes.textPrimary}`}
-                placeholderTextColor="#475569"
-              />
-            </View>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              className="px-4 mb-4"
-            >
-              <TouchableOpacity
-                onPress={() => setSelectedCategory("all")}
-                className={`px-4 py-2 rounded-full mr-2 ${
-                  selectedCategory === "all"
-                    ? classes.pillActive
-                    : classes.pillInactive
-                }`}
-              >
-                <Text
-                  className={
-                    selectedCategory === "all"
-                      ? classes.pillActiveText
-                      : classes.pillIncativeText
-                  }
-                >
-                  All
-                </Text>
-              </TouchableOpacity>
-              {categories.map((category) => (
-                <TouchableOpacity
-                  key={category}
-                  onPress={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-full mr-2 ${selectedCategory === category ? classes.pillActive : classes.pillInactive}`}
-                >
-                  <Text
-                    className={
-                      selectedCategory === category
-                        ? classes.pillActiveText
-                        : classes.pillIncativeText
-                    }
-                  >
-                    {category}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <ProductCard
+            product={item}
+            onPress={() =>
+              navigation.navigate("ProductDetails", { product: item })
+            }
+          />
         )}
+        numColumns={2}
+        columnWrapperStyle={{
+          justifyContent: "space-between",
+          paddingHorizontal: 16,
+          gap: 12,
+        }}
+        onEndReached={() => !loading && hasMore && loadMore()}
+        ListHeaderComponent={
+          <HomeHeader
+            user={user}
+            classes={classes}
+            greeting={getGreeting()}
+            searchText={searchText}
+            setSearchText={setSearchText}
+            featuredProducts={featuredProducts}
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onCategorySelect={setSelectedCategory}
+            onSeeAllCategories={() => setShowCategoriesModal(true)}
+            activeSlide={activeSlide}
+            onCarouselScroll={(e) =>
+              setActiveSlide(
+                Math.round(
+                  e.nativeEvent.contentOffset.x /
+                    Dimensions.get("window").width,
+                ),
+              )
+            }
+          />
+        }
+      />
+      <CategoriesModal
+        visible={showCategoriesModal}
+        onClose={() => setShowCategoriesModal(false)}
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onSelect={setSelectedCategory}
       />
     </SafeAreaView>
   );
