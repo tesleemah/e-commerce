@@ -80,8 +80,8 @@ This structure separates concerns clearly — screens contain only UI logic, con
 | Login screen    | ![LogIn screen](assets/LogIn.jpg)             |
 | Home screen     | ![Home screen](assets/Home.jpg)               |
 | Product Details | ![Product Details](assets/ProductDetails.jpg) |
-| Cart            | ![Cart](assets/Cart.jpg)                      |
-| CheckOut        | ![CheckOut](assets/CheckOut.jpg)              |
+| Cart            | ![Cart](assets/CartEmpty.jpg)                      |
+| CheckOut        | ![CheckOut](assets/CheckOutscreen.jpg)              |
 | Profile         | ![Profile](assets/Profile.jpg)                |
 
 ---
