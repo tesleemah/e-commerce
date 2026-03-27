@@ -2,7 +2,7 @@
 
 ## Description
 
-ShopApp is a fully functional mobile e-commerce application built with React Native and Expo. The app allows users to register and log in securely, browse products fetched from the DummyJSON API, add items to their cart, save favourites to a wishlist, and complete a simulated checkout flow. The app features a dark-first design theme with a professional deep blue accent palette, persistent cart and auth state, and a smooth modern UI across all screens.
+ShopApp is a fully functional mobile e-commerce application built with React Native and Expo. The app allows users to register and log in securely, browse products fetched from the DummyJSON API, add items to their cart, save favourites to a wishlist, and complete a simulated checkout flow.
 
 ---
 
@@ -19,14 +19,13 @@ ShopApp is a fully functional mobile e-commerce application built with React Nat
 - Home screen with product grid, search bar, featured product carousel, and category filtering
 - Product Details screen with large image, description, quantity selector, reviews, and Add to Cart
 - Cart screen with item list, quantity controls, remove item, subtotal and total
-- Cart state persists across app restarts using Zustand persist middleware with AsyncStorage
+- Cart state persists across app restarts using useContext with AsyncStorage
 - Checkout screen with delivery address form, payment method selection, and order summary
 - Success screen showing order confirmation with order ID, clears cart on confirm
 - Profile screen with avatar (initials or gallery image), user info display, inline edit mode, and logout
 
 ### Bonus Features
 
-- Dark mode toggle with AsyncStorage persistence — switches entire app theme instantly
 - Wishlist feature — save and remove products, heart icon on product cards
 - Category filtering — horizontal scrollable pills + "See all" bottom sheet modal
 - Product reviews section — displayed on Product Details screen from DummyJSON data
@@ -53,35 +52,37 @@ ShopApp is a fully functional mobile e-commerce application built with React Nat
 
 ```
 src/
+  screnshots/
+                  contains screenshots of the app
   screens/
     auth/          Login and Register screens — only shown to unauthenticated users
     main/          All app screens behind the navigation guard
   components/      Reusable UI components used across multiple screens
   navigation/      All navigator files — AuthStack, AppStack, TabNavigator, RootNavigator
   context/         AuthContext and ThemeContext — global state via Context API
-  hooks/           Custom hooks — useProducts for DummyJSON fetching
+  hooks/           Custom hooks — useProducts for DummyJSON fetching,
+                    useCategories for category filtering.
   types/           All TypeScript interfaces — Product, CartItem, User, navigation params
   constants/       theme.ts — full light and dark Tailwind class palettes
   utils/           validators.ts and storage.ts utility functions
-  data/            Static data if needed
 assets/            App logo, icons, splash image
 ```
 
-This structure separates concerns clearly — screens contain only UI logic, context and store handle state, hooks handle data fetching, and types provide a single source of truth for all data shapes. The grader can navigate to any feature instantly without hunting through unrelated files.
+This structure separates concerns clearly — screens contain only UI logic, context handle state across the app, hooks handle data fetching, and types provide a single source of truth for all data shapes. The grader can navigate to any feature instantly without hunting through unrelated files.
 
 ---
 
 ## Screenshots
 
-| Screen          | Screenshot         |
-| --------------- | ------------------ |
-| Splash screen   | _(add screenshot)_ |
-| Login screen    | _(add screenshot)_ |
-| Home screen     | _(add screenshot)_ |
-| Product Details | _(add screenshot)_ |
-| Cart            | _(add screenshot)_ |
-| Checkout        | _(add screenshot)_ |
-| Profile         | _(add screenshot)_ |
+| Screen          | Screenshot                                       |
+| --------------- | ------------------------------------------------ |
+| Splash screen   | ![Splash screen](screenshots\Splash.jpg)         |
+| Login screen    | ![LogIn screen](screenshots\LogIn.jpg)           |
+| Home screen     | ![Home screen](screenshots\Home.jpg)             |
+| Product Details | ![Splash screen](screenshots\ProductDetails.jpg) |
+| Cart            | ![Splash screen](screenshots\Cart.jpg)           |
+| CheckOut        | ![Splash screen](screenshots\CheckOut.jpg)       |
+| Profile         | ![Splash screen](screenshots\Profile.jpg)        |
 
 ---
 
@@ -106,9 +107,6 @@ const filteredProducts = useMemo(() => {
 }, [products, searchText, selectedCategory]);
 ```
 
-**Location: `src/store/cartStore.ts`**
-`cartTotal` and `cartCount` are computed functions that read from `cartItems` using `get()` — they only recalculate when called, always returning the latest value without unnecessary state duplication.
-
 ### useCallback
 
 **Location: `src/screens/main/Home.tsx`**
@@ -127,7 +125,7 @@ const renderProduct = useCallback(
 )
 ```
 
-**Location: `src/screens/main/Home.tsx`**
+**Location: `src/screens/main/Home.tsx` and `src/components/main/HomeHeader.tsx`**
 `handleEndReached`, `onCarouselScroll`, `renderCarouselItem`, `ListHeader`, `ListEmpty`, and `ListFooter` are all wrapped in `useCallback` to prevent unnecessary recreation on each render cycle.
 
 **Location: `src/screens/main/ProductDetails.tsx`**
@@ -152,8 +150,6 @@ const ProductCard = React.memo(({ product, onPress }: Props) => {
 ## Challenges Faced
 
 **NativeWind configuration in Codespaces** — Setting up NativeWind v4 in a GitHub Codespaces environment was unexpectedly difficult. The babel plugin approach from NativeWind v2 documentation caused build errors. The resolution was using `jsxImportSource: "nativewind"` inside `babel-preset-expo` rather than a separate plugin entry, combined with the correct `metro.config.js` setup using `withNativeWind`.
-
-**Zustand persist with AsyncStorage** — The first implementation attempted to serialize functions alongside state, which crashed the app silently. The fix was adding `partialize` to the persist config to explicitly tell Zustand to only save `cartItems` and ignore all function properties.I decide to stick with useContext,given that the app Size isn't large.
 
 **Navigation between tab and stack screens** — The Home screen needed to navigate to `ProductDetails` which lives in the root stack, not the tab navigator. This required `CompositeScreenProps` combining both `BottomTabScreenProps` and `NativeStackScreenProps` — a pattern not immediately obvious from the React Navigation docs.
 
